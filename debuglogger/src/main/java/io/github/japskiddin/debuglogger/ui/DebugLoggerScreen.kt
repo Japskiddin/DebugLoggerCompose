@@ -49,20 +49,20 @@ fun DebugLogger(
     Column(
         modifier = Modifier.background(colorResource(id = R.color.debug_logger_background))
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(2.dp)
+        ) {
             MenuButton(
                 onClick = { viewModel.clearLogs() },
                 text = stringResource(id = R.string.clear_log),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 4.dp, top = 4.dp, bottom = 4.dp, end = 2.dp)
+                modifier = Modifier.weight(1f)
             )
             MenuButton(
                 onClick = { viewModel.copyLogs(context) },
                 text = stringResource(id = R.string.copy_log),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 2.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
+                modifier = Modifier.weight(1f)
             )
         }
         LogList(viewModel)
@@ -117,7 +117,7 @@ fun MenuButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifier)
         onClick = onClick,
         shape = RoundedCornerShape(20),
         colors = ButtonDefaults.buttonColors(colorResource(id = R.color.debug_button_background)),
-        modifier = modifier
+        modifier = modifier.padding(2.dp)
     ) {
         Text(
             text = text,
