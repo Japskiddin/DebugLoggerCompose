@@ -1,23 +1,15 @@
 package io.github.japskiddin.debuglogger.ui
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.AbstractComposeView
-import io.github.japskiddin.debuglogger.adapter.LogAdapter
-import io.github.japskiddin.debuglogger.databinding.DebugLoggerBinding
 
 class DebugLogger @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : AbstractComposeView(context, attrs, defStyle) {
-    private lateinit var binding: DebugLoggerBinding
-    private lateinit var logAdapter: LogAdapter
-    private val logHandler = Handler(Looper.getMainLooper())
-
 //    constructor(context: Context) : this(context, null, 0)
 //
 //    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -59,29 +51,5 @@ class DebugLogger @JvmOverloads constructor(
     @Composable
     override fun Content() {
         DebugLogger()
-    }
-
-//    override fun onCreate(owner: LifecycleOwner) {
-//        binding = DebugLoggerBinding.inflate(LayoutInflater.from(context), this, true)
-//        logAdapter = LogAdapter()
-//        binding.rvLogs.adapter = logAdapter
-//        binding.btnLogClear.setOnClickListener { onLogsClear() }
-//        binding.btnLogCopy.setOnClickListener { onCopyLogs() }
-//    }
-//
-//    override fun onPause(owner: LifecycleOwner) {
-//        logHandler.removeCallbacks(debugLogRunnable)
-//    }
-//
-//    override fun onResume(owner: LifecycleOwner) {
-//        logHandler.post(debugLogRunnable)
-//    }
-//
-//    override fun onDestroy(owner: LifecycleOwner) {
-//        logHandler.removeCallbacks(debugLogRunnable)
-//    }
-
-    companion object {
-        private const val HANDLER_DELAY = 2000L
     }
 }

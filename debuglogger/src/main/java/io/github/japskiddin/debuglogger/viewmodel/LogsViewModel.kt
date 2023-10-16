@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.japskiddin.debuglogger.manager.LogManager
-import io.github.japskiddin.debuglogger.model.LogEvent
+import io.github.japskiddin.debuglogger.model.Log
 import kotlinx.coroutines.launch
 
 class LogsViewModel : ViewModel() {
-    private val logsLiveData: MutableLiveData<List<LogEvent>> = MutableLiveData()
+    private val logs: MutableLiveData<List<Log>> = MutableLiveData()
     private val logHandler = Handler(Looper.getMainLooper())
     private val logRunnable = object : Runnable {
         override fun run() {
@@ -32,15 +32,28 @@ class LogsViewModel : ViewModel() {
         logHandler.removeCallbacks(logRunnable)
     }
 
-    fun getLogs(): LiveData<List<LogEvent>> {
-        return logsLiveData
+    fun getLogs(): LiveData<List<Log>> {
+        return logs
+    }
+
+    fun getAllItemsString(): String {
+        val list = logs.value ?: listOf()
+        val sb = StringBuilder()
+        for (i in list.indices) {
+            val log = list[i]
+            sb.append(log.toString())
+            if (i + 1 < list.size) {
+                sb.append("\n")
+            }
+        }
+        return sb.toString()
     }
 
     private fun postNewList() {
         if (!LogManager.getInstance().isEnabled()) return
         viewModelScope.launch {
-            val logs = LogManager.getInstance().getLogs().toList()
-            logsLiveData.value = logs
+            val list = LogManager.getInstance().getLogs().toList()
+            logs.value = list
         }
     }
 

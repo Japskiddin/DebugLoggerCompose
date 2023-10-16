@@ -23,7 +23,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.japskiddin.debuglogger.model.Level
-import io.github.japskiddin.debuglogger.model.LogEvent
+import io.github.japskiddin.debuglogger.model.Log
 import io.github.japskiddin.debuglogger.viewmodel.LogsViewModel
 
 /*
@@ -46,6 +46,11 @@ import io.github.japskiddin.debuglogger.viewmodel.LogsViewModel
 fun DebugLogger(
     viewModel: LogsViewModel = viewModel()
 ) {
+    LogList(viewModel)
+}
+
+@Composable
+fun LogList(viewModel: LogsViewModel) {
     val lifecycleEvent = rememberLifecycleEvent()
     LaunchedEffect(lifecycleEvent) {
         if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
@@ -55,13 +60,9 @@ fun DebugLogger(
         }
     }
     val logs = viewModel.getLogs().observeAsState()
-    LogList(logs = logs.value ?: listOf())
-}
-
-@Composable
-fun LogList(logs: List<LogEvent>) {
+    val list = logs.value ?: listOf()
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(logs) {
+        items(list) {
             ListItem(log = it)
         }
     }
@@ -70,7 +71,7 @@ fun LogList(logs: List<LogEvent>) {
 @Preview
 @Composable
 fun ListItem(
-    log: LogEvent = LogEvent(Level.INFO, "TAG", "Test")
+    log: Log = Log(Level.INFO, "TAG", "Test")
 ) {
     Text(
         text = log.toString(),

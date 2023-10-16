@@ -1,17 +1,17 @@
 package io.github.japskiddin.debuglogger.manager
 
 import io.github.japskiddin.debuglogger.model.Level
-import io.github.japskiddin.debuglogger.model.LogEvent
+import io.github.japskiddin.debuglogger.model.Log
 
 class LogManager private constructor() {
     private var isEnabled = false
-    private val logs: MutableList<LogEvent>
+    private val logs: MutableList<Log>
 
     init {
         logs = ArrayList()
     }
 
-    fun getLogs(): List<LogEvent> {
+    fun getLogs(): List<Log> {
         return logs
     }
 
@@ -46,7 +46,7 @@ class LogManager private constructor() {
     private fun addToLog(type: Level, tag: String, event: String) {
         if (!isEnabled) return
         synchronized(logs) {
-            val log = LogEvent(type, tag, event)
+            val log = Log(type, tag, event)
             logs.add(log)
         }
     }
