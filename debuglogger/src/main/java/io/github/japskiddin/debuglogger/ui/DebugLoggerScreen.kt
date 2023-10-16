@@ -1,18 +1,30 @@
 package io.github.japskiddin.debuglogger.ui
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.japskiddin.debuglogger.model.Level
 import io.github.japskiddin.debuglogger.model.LogEvent
-import io.github.japskiddin.debuglogger.viewmodel.DebugLoggerViewModel
+import io.github.japskiddin.debuglogger.viewmodel.LogsViewModel
 
 /*
  * https://stackoverflow.com/questions/73284058/best-practise-of-using-view-model-in-jetpack-compose
@@ -32,16 +44,25 @@ import io.github.japskiddin.debuglogger.viewmodel.DebugLoggerViewModel
 
 @Composable
 fun DebugLogger(
-    vm: DebugLoggerViewModel = viewModel()
+    viewModel: LogsViewModel = viewModel()
 ) {
-    LogList(logs = vm.getLogs())
+    val lifecycleEvent = rememberLifecycleEvent()
+    LaunchedEffect(lifecycleEvent) {
+        if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+            viewModel.resume()
+        } else if (lifecycleEvent == Lifecycle.Event.ON_PAUSE) {
+            viewModel.pause()
+        }
+    }
+    val logs = viewModel.getLogs().observeAsState()
+    LogList(logs = logs.value ?: listOf())
 }
 
 @Composable
 fun LogList(logs: List<LogEvent>) {
-    LazyColumn {
-        items(logs) { log ->
-            ListItem(log)
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(logs) {
+            ListItem(log = it)
         }
     }
 }
@@ -49,11 +70,26 @@ fun LogList(logs: List<LogEvent>) {
 @Preview
 @Composable
 fun ListItem(
-    logEvent: LogEvent = LogEvent(Level.INFO, "TAG", "Test")
+    log: LogEvent = LogEvent(Level.INFO, "TAG", "Test")
 ) {
     Text(
-        text = logEvent.toString(),
+        text = log.toString(),
         fontSize = 12.sp,
         modifier = Modifier.padding(2.dp)
     )
+}
+
+@Composable
+fun rememberLifecycleEvent(lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current): Lifecycle.Event {
+    var state by remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            state = event
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+    return state
 }

@@ -2,15 +2,18 @@ package io.github.japskiddin.debuglogger.viewmodel
 
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.japskiddin.debuglogger.manager.LogManager
 import io.github.japskiddin.debuglogger.model.LogEvent
+import kotlinx.coroutines.launch
 
-class DebugLoggerViewModel : ViewModel() {
+class LogsViewModel : ViewModel() {
     private val logsLiveData: MutableLiveData<List<LogEvent>> = MutableLiveData()
     private val logHandler = Handler(Looper.getMainLooper())
-    private val debugLogRunnable = object : Runnable {
+    private val logRunnable = object : Runnable {
         override fun run() {
             postNewList()
             logHandler.postDelayed(this, HANDLER_DELAY)
@@ -22,21 +25,23 @@ class DebugLoggerViewModel : ViewModel() {
     }
 
     fun resume() {
-        logHandler.post(debugLogRunnable)
+        logHandler.post(logRunnable)
     }
 
     fun pause() {
-        logHandler.removeCallbacks(debugLogRunnable)
+        logHandler.removeCallbacks(logRunnable)
     }
 
-    fun getLogs(): List<LogEvent> {
-        return logsLiveData.value ?: ArrayList()
+    fun getLogs(): LiveData<List<LogEvent>> {
+        return logsLiveData
     }
 
     private fun postNewList() {
         if (!LogManager.getInstance().isEnabled()) return
-        val list = ArrayList(LogManager.getInstance().getLogs())
-        logsLiveData.postValue(list)
+        viewModelScope.launch {
+            val logs = LogManager.getInstance().getLogs().toList()
+            logsLiveData.value = logs
+        }
     }
 
     companion object {
