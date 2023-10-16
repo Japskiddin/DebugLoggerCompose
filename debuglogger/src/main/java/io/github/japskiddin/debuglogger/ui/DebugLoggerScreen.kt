@@ -1,9 +1,8 @@
 package io.github.japskiddin.debuglogger.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,25 +31,17 @@ import io.github.japskiddin.debuglogger.viewmodel.DebugLoggerViewModel
  */
 
 @Composable
-fun DebugLoggerScreen(
-    modifier: Modifier = Modifier,
+fun DebugLogger(
     vm: DebugLoggerViewModel = viewModel()
 ) {
-    Column(modifier = modifier) {
-        LogList(logs = vm.getLogs())
-    }
+    LogList(logs = vm.getLogs())
 }
 
 @Composable
 fun LogList(logs: List<LogEvent>) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        LazyColumn {
-            items(count = logs.size) { pos ->
-                ListItem(logEvent = logs[pos])
-            }
+    LazyColumn {
+        items(logs) { log ->
+            ListItem(log)
         }
     }
 }
@@ -58,16 +49,11 @@ fun LogList(logs: List<LogEvent>) {
 @Preview
 @Composable
 fun ListItem(
-    modifier: Modifier = Modifier,
     logEvent: LogEvent = LogEvent(Level.INFO, "TAG", "Test")
 ) {
-    Column(
-        modifier = modifier
-            .padding(2.dp)
-    ) {
-        Text(
-            text = logEvent.toString(),
-            fontSize = 12.sp,
-        )
-    }
+    Text(
+        text = logEvent.toString(),
+        fontSize = 12.sp,
+        modifier = Modifier.padding(2.dp)
+    )
 }

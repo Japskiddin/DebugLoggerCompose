@@ -58,7 +58,7 @@ class DebugLogger @JvmOverloads constructor(
 
     @Composable
     override fun Content() {
-        DebugLoggerScreen()
+        DebugLogger()
     }
 
 //    override fun onCreate(owner: LifecycleOwner) {
