@@ -1,11 +1,16 @@
 package io.github.japskiddin.debuglogger.viewmodel
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.japskiddin.debuglogger.R
 import io.github.japskiddin.debuglogger.manager.LogManager
 import io.github.japskiddin.debuglogger.model.Log
 import kotlinx.coroutines.launch
@@ -36,7 +41,20 @@ class LogsViewModel : ViewModel() {
         return logs
     }
 
-    fun getAllItemsString(): String {
+    fun clearLogs() {
+        LogManager.getInstance().clear()
+        logs.postValue(listOf())
+    }
+
+    fun copyLogs(context: Context) {
+        val clipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied text", getAllItemsString())
+        clipboardManager.setPrimaryClip(clip)
+        Toast.makeText(context.applicationContext, R.string.text_copied, Toast.LENGTH_LONG).show()
+    }
+
+    private fun getAllItemsString(): String {
         val list = logs.value ?: listOf()
         val sb = StringBuilder()
         for (i in list.indices) {

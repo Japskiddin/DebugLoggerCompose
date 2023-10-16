@@ -1,9 +1,17 @@
 package io.github.japskiddin.debuglogger.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -12,9 +20,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,31 +34,39 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.japskiddin.debuglogger.R
 import io.github.japskiddin.debuglogger.model.Level
 import io.github.japskiddin.debuglogger.model.Log
 import io.github.japskiddin.debuglogger.viewmodel.LogsViewModel
+import kotlinx.coroutines.launch
 
-/*
- * https://stackoverflow.com/questions/73284058/best-practise-of-using-view-model-in-jetpack-compose
- * https://www.fandroid.info/mobilnoe-prilojenie-kotlin-jetpack-compose-ui/
- * https://developer.android.com/codelabs/basic-android-kotlin-compose-viewmodel-and-state#2
- * https://developer.android.com/topic/libraries/architecture/viewmodel#jetpack-compose_1
- * https://medium.com/mobile-app-development-publication/jetpack-compose-custom-layout-made-easy-b5743f8cc82c
- * https://stackoverflow.com/questions/74392142/jetpack-compose-how-to-trigger-an-event-when-a-screen-is-composed
- * https://medium.com/@yhdista/change-the-brightness-for-the-screen-thinking-in-compose-84378dce3b6c
- * https://semicolonspace.com/jetpack-compose-lazycolumn/
- * https://medium.com/@rahulchaurasia3592/custom-compose-view-part-1-fd53e2b7ffbd
- * https://medium.com/dscvitpune/getting-started-with-jetpack-compose-e799f262ce50
- * https://androidwave.com/ultimate-guide-to-jetpack-compose-list/
- * https://stackoverflow.com/questions/52566018/reacting-to-activity-lifecycle-in-viewmodel
- * https://developer.android.com/jetpack/compose/migrate/interoperability-apis/compose-in-views
- */
-
+@Preview
 @Composable
 fun DebugLogger(
-    viewModel: LogsViewModel = viewModel()
+    viewModel: LogsViewModel = viewModel(),
 ) {
-    LogList(viewModel)
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier.background(colorResource(id = R.color.debug_logger_background))
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            MenuButton(
+                onClick = { viewModel.clearLogs() },
+                text = stringResource(id = R.string.clear_log),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 4.dp, top = 4.dp, bottom = 4.dp, end = 2.dp)
+            )
+            MenuButton(
+                onClick = { viewModel.copyLogs(context) },
+                text = stringResource(id = R.string.copy_log),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 2.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
+            )
+        }
+        LogList(viewModel)
+    }
 }
 
 @Composable
@@ -61,7 +81,15 @@ fun LogList(viewModel: LogsViewModel) {
     }
     val logs = viewModel.getLogs().observeAsState()
     val list = logs.value ?: listOf()
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    val lazyColumnListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = lazyColumnListState
+    ) {
+        coroutineScope.launch {
+            lazyColumnListState.scrollToItem(list.size)
+        }
         items(list) {
             ListItem(log = it)
         }
@@ -76,8 +104,27 @@ fun ListItem(
     Text(
         text = log.toString(),
         fontSize = 12.sp,
-        modifier = Modifier.padding(2.dp)
+        color = colorResource(id = R.color.debug_log_text),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(2.dp)
     )
+}
+
+@Composable
+fun MenuButton(onClick: () -> Unit, text: String, modifier: Modifier = Modifier) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(20),
+        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.debug_button_background)),
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            color = colorResource(id = R.color.debug_button_text),
+            fontSize = 12.sp
+        )
+    }
 }
 
 @Composable
