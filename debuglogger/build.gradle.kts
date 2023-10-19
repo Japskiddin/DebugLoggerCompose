@@ -155,8 +155,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.recyclerView)
-    implementation(libs.constraintLayout)
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.runtime.livedata)
     implementation(libs.compose.material3)
