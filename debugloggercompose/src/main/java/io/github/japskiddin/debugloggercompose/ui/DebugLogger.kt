@@ -1,4 +1,4 @@
-package io.github.japskiddin.debuglogger.ui
+package io.github.japskiddin.debugloggercompose.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -34,10 +34,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.japskiddin.debuglogger.R
-import io.github.japskiddin.debuglogger.model.Level
-import io.github.japskiddin.debuglogger.model.Log
-import io.github.japskiddin.debuglogger.viewmodel.LogsViewModel
+import io.github.japskiddin.debugloggercompose.R
+import io.github.japskiddin.debugloggercompose.model.Level
+import io.github.japskiddin.debugloggercompose.model.Log
+import io.github.japskiddin.debugloggercompose.viewmodel.LogsViewModel
 import kotlinx.coroutines.launch
 
 @Preview

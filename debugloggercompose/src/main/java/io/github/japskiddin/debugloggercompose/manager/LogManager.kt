@@ -1,7 +1,7 @@
-package io.github.japskiddin.debuglogger.manager
+package io.github.japskiddin.debugloggercompose.manager
 
-import io.github.japskiddin.debuglogger.model.Level
-import io.github.japskiddin.debuglogger.model.Log
+import io.github.japskiddin.debugloggercompose.model.Level
+import io.github.japskiddin.debugloggercompose.model.Log
 
 class LogManager private constructor() {
     private var isEnabled = false

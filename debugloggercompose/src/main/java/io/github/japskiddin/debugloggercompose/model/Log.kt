@@ -1,4 +1,4 @@
-package io.github.japskiddin.debuglogger.model
+package io.github.japskiddin.debugloggercompose.model
 
 import java.text.SimpleDateFormat
 import java.util.Locale

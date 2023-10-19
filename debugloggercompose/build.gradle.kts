@@ -21,7 +21,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.japskiddin.debuglogger"
+    namespace = "io.github.japskiddin.debugloggercompose"
     buildToolsVersion = AppConfig.buildToolsVersion
     compileSdk = AppConfig.compileSdk
     defaultConfig {
@@ -79,6 +79,14 @@ android {
             )
         }
     }
+
+    libraryVariants.all {
+        outputs.all {
+            packageLibraryProvider {
+                archiveFileName.set("${LibConfig.artifactId}-${buildType.name}.aar")
+            }
+        }
+    }
 }
 
 val propertiesName = "github.properties"
@@ -91,7 +99,7 @@ val outputsDirectoryPath = layout.buildDirectory.dir("outputs").get().toString()
 
 publishing {
     publications {
-        create<MavenPublication>("debugLogger") {
+        create<MavenPublication>("debugLoggerCompose") {
             groupId = LibConfig.groupId
             artifactId = LibConfig.artifactId
             version = LibConfig.version
@@ -102,7 +110,7 @@ publishing {
     repositories {
         maven {
             name = "GithubPackages"
-            url = uri("https://maven.pkg.github.com/japskiddin/DebugLogger")
+            url = uri("https://maven.pkg.github.com/japskiddin/DebugLoggerCompose")
             credentials {
                 username = if (githubProperties.hasProperty("gpr.usr")) {
                     githubProperties.getProperty("gpr.usr")

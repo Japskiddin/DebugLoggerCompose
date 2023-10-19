@@ -1,4 +1,4 @@
-package io.github.japskiddin.debuglogger.model
+package io.github.japskiddin.debugloggercompose.model
 
 enum class Level(private val value: String) {
     INFO("INFO"),

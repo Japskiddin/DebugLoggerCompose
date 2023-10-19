@@ -1,12 +1,12 @@
-package io.github.japskiddin.debuglogger.sample
+package io.github.japskiddin.debugloggercompose.sample
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import io.github.japskiddin.debuglogger.manager.LogManager
-import io.github.japskiddin.debuglogger.ui.DebugLogger
+import io.github.japskiddin.debugloggercompose.manager.LogManager
+import io.github.japskiddin.debugloggercompose.ui.DebugLogger
 
 class MainActivity : ComponentActivity() {
     // TODO: 29.05.2022 поучиться написанию тестов

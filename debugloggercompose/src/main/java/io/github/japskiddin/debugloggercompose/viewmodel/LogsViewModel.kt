@@ -1,4 +1,4 @@
-package io.github.japskiddin.debuglogger.viewmodel
+package io.github.japskiddin.debugloggercompose.viewmodel
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,9 +10,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.japskiddin.debuglogger.R
-import io.github.japskiddin.debuglogger.manager.LogManager
-import io.github.japskiddin.debuglogger.model.Log
+import io.github.japskiddin.debugloggercompose.R
+import io.github.japskiddin.debugloggercompose.manager.LogManager
+import io.github.japskiddin.debugloggercompose.model.Log
 import kotlinx.coroutines.launch
 
 class LogsViewModel : ViewModel() {

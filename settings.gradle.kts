@@ -39,4 +39,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Debug Logger Compose"
-include(":app", ":debuglogger")
+include(":sample", ":debugloggercompose")

@@ -16,7 +16,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.japskiddin.debuglogger.sample"
+    namespace = "io.github.japskiddin.debugloggercompose.sample"
     buildToolsVersion = AppConfig.buildToolsVersion
     compileSdk = AppConfig.compileSdk
     defaultConfig {
@@ -72,5 +72,5 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
-    implementation(project(":debuglogger"))
+    implementation(project(":debugloggercompose"))
 }
